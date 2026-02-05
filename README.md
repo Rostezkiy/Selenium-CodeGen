@@ -59,7 +59,7 @@ A high-performance recorder built on Manifest V3.
 ### 1. Server Setup
 ```bash
 # Clone the repository
-git clone https://github.com/Rostezkiy/selenium-codegen.git
+git clone https://github.com/Rostezkiy/Selenium-CodeGen.git
 cd SeleniumCodeGen
 
 # Create and activate virtual environment
