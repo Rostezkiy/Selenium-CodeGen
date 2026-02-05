@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Настройки Autotest Pro</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; width: 450px; color: #333; }
+        h2 { border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+        .option-group { margin-top: 25px; }
+        .option { margin-top: 15px; background: #f5f5f5; padding: 15px; border-radius: 8px; }
+        .option label { display: block; margin-bottom: 8px; font-weight: bold; }
+        .option input[type="text"], .option select { width: 95%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .option p { font-size: 12px; color: #666; margin-top: 5px; }
+        button { margin-top: 25px; padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #0056b3; }
+        #status { margin-top: 10px; color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>Настройки Autotest Pro</h2>
+    <div class="option-group">
+        <h3>Лицензия</h3>
+        <div class="option">
+            <label for="licenseKey">Ваш лицензионный ключ:</label>
+            <input type="text" id="licenseKey" placeholder="Введите ваш ключ">
+            <p>Ключ необходим для генерации кода на сервере.</p>
+        </div>
+    </div>
+    <div class="option-group">
+        <h3>Конфигурация AI (LLM)</h3>
+        <div class="option">
+            <label><input type="checkbox" id="useLlm"> Использовать LLM (Ollama)</label>
+            <p>Требует запущенного локально Ollama. Если опция выключена, будут использоваться только надежные алгоритмические селекторы.</p>
+        </div>
+        <div class="option">
+            <label for="ollamaUrl">URL для Ollama API:</label>
+            <input type="text" id="ollamaUrl">
+            <p>Адрес, по которому доступен Ollama.</p>
+        </div>
+        <div class="option">
+            <label for="llmModel">Имя модели LLM:</label>
+            <input type="text" id="llmModel">
+            <p>Название модели, которое будет использоваться в запросах.</p>
+        </div>
+    </div>
+
+    <div class="option-group">
+        <h3>Стратегия Локаторов</h3>
+        <div class="option">
+            <label for="customTestId">Атрибут для Test ID:</label>
+            <input type="text" id="customTestId">
+            <p>Укажите атрибут, который используется в вашем проекте для уникальной идентификации элементов (например, 'data-qa' или 'data-cy').</p>
+        </div>
+        <div class="option">
+            <label for="locatorStrategy">Приоритетный тип локатора:</label>
+            <select id="locatorStrategy">
+                <option value="smart">Smart Order (Рекомендуется)</option>
+                <option value="css">Только CSS</option>
+                <option value="xpath">Только XPath</option>
+            </select>
+            <p>Определяет, какие типы локаторов будут сгенерированы.</p>
+        </div>
+         <div class="option">
+            <label><input type="checkbox" id="excludeXpath"> Не генерировать полный XPath</label>
+            <p>Исключает хрупкие абсолютные XPath из списка локаторов.</p>
+        </div>
+    </div>
+
+    <button id="save">Сохранить</button>
+    <div id="status"></div>
+
+    <script src="options.js"></script>
+</body>
+</html>

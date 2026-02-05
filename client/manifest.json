@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "Selenium CodeGen",
+  "version": "4.0",
+  "description": "Интеллектуальный генератор автотестов для Python + Selenium + Allure.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "contextMenus",
+    "offscreen",
+    "downloads",
+    "sidePanel"
+  ],
+  "host_permissions": [
+    "http://localhost:11434/",
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Selenium CodeGen"
+  },
+  "side_panel": {
+    "default_path": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content_script.js"
+      ],
+      "all_frames": true
+    }
+  ],
+  "options_page": "options.html"
+}

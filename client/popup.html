@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Selenium CodegGen</title>
+    <meta charset="UTF-8">
+    <script src="sortable.min.js"></script>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-link active" data-tab="scenario-tab">Сценарий</button>
+            <button class="tab-link" data-tab="variables-tab">Переменные</button>
+        </div>
+
+        <!-- === КОНТЕНТ ПЕРВОЙ ВКЛАДКИ === -->
+        <div id="scenario-tab" class="tab-content active">
+            
+            <!-- НОВЫЙ КОМПАКТНЫЙ БЛОК УПРАВЛЕНИЯ -->
+            <div class="scenario-manager settings">
+                <div class="manager-row" id="collection-manager-row">
+                    <span class="manager-label">Коллекция:</span>
+                    <select id="collection-select"></select>
+                    <button id="rename-collection-btn" class="icon-btn" title="Переименовать коллекцию">✏️</button>
+                    <button id="delete-collection-btn" class="icon-btn danger" title="Удалить коллекцию">🗑️</button>
+                    <button id="add-new-collection-btn" class="add-new-btn" data-type="collection">➕</button>
+                </div>
+                <div class="manager-row" id="test-case-manager-row">
+                    <span class="manager-label">Сценарий:</span>
+                    <select id="test-case-select"></select>
+                    <button id="rename-test-case-btn" class="icon-btn" title="Переименовать тест">✏️</button>
+                    <button id="delete-test-case-btn" class="icon-btn danger" title="Удалить тест">🗑️</button>
+                    <button id="add-new-test-case-btn" class="add-new-btn" data-type="test-case">➕</button>
+                </div>
+            </div>
+
+            <div class="settings">
+                 <div class="row" style="margin-bottom: 10px;">
+                    <input type="text" id="page-name-input" placeholder="Имя PageObject (напр. LoginPage)">
+                </div>
+                 <div class="row checkbox-group">
+                     <label class="custom-checkbox"><input type="checkbox" id="generate-pom-checkbox" checked><span>Генерировать POM</span></label>
+                     <label class="custom-checkbox"><input type="checkbox" id="generate-test-checkbox" checked><span>Генерировать тест</span></label>
+                     <label class="custom-checkbox"><input type="checkbox" id="generate-basepage-checkbox" checked><span>Включить методы BasePage</span></label>
+                </div>
+            </div>
+            
+            <div class="controls-wrapper">
+                <div class="primary-controls">
+                    <button id="startBtn">▶️ Начать запись</button>
+                    <button id="stopBtn">⏹️ Остановить</button>
+                    <button id="copyBtn">📋 Копировать код</button>
+                </div>
+                <div class="secondary-controls">
+                    <div class="dropdown">
+                        <button id="more-actions-btn" title="Дополнительные действия">Ещё ⚙️</button>
+                        <div id="more-actions-dropdown" class="dropdown-content">
+                            <button id="addAssertBtn" title="Интерактивно добавить проверку">🕵️ Добавить проверку</button>
+                            <button id="addIfBtn" title="Добавить условный блок IF">❓ Добавить IF</button>
+                            <button id="exportBtn" title="Экспорт сценария в JSON">📤 Экспорт</button>
+                            <label for="importInput" class="file-input-label" title="Импорт сценария из JSON">📥 Импорт</label>
+                            <input type="file" id="importInput" accept=".json">
+                            <button id="clearBtn" title="Очистить все шаги" class="danger-text">🗑️ Очистить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="conditional-controls" class="controls-wrapper conditional-block">
+                <span>Запись в блок: <b id="conditional-context-label">IF</b></span>
+                <div>
+                    <button id="addElseBtn">Добавить ELSE</button>
+                    <button id="endBlockBtn">Закончить блок</button>
+                </div>
+            </div>
+            
+            <!-- ОБНОВЛЕННЫЙ СПИСОК С БЛОКОМ-ЗАГЛУШКОЙ -->
+            <div id="steps-container">
+                <ul id="steps-list"></ul>
+                <div id="empty-state" class="empty-state-container" style="display: none;">
+                    <div class="empty-state-icon">🎦</div>
+                    <div class="empty-state-title">Запись не начата</div>
+                    <div class="empty-state-text">Нажмите «Начать запись», чтобы создать ваш первый шаг.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- === КОНТЕНТ ВТОРОЙ ВКЛАДКИ (без изменений) === -->
+        <div id="variables-tab" class="tab-content">
+            <div id="variables-section" class="settings">
+                <div class="row env-manager">
+                    <h4 class="section-title">Окружения</h4>
+                    <div>
+                        <select id="environment-select"></select>
+                    </div>
+                </div>
+                <div id="variables-list"></div>
+                <button id="add-variable-btn">+ Добавить переменную</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно без изменений -->
+    <div id="edit-modal" class="modal-backdrop">
+        <div class="modal-content">
+            <h3>Редактирование шага</h3>
+            <input type="hidden" id="edit-step-id">
+            
+            <div class="form-group">
+                <label for="edit-step-name">Имя шага (Allure):</label>
+                <input type="text" id="edit-step-name">
+            </div>
+            
+            <div class="form-group" id="edit-value-group" style="display:none;">
+                <label for="edit-value">Значение:</label>
+                <div class="flex-container">
+                     <input type="text" id="edit-value">
+                     <select id="edit-variable-select">
+                         <option value="">-- Использовать переменную --</option>
+                     </select>
+                </div>
+            </div>
+
+            <div class="form-group" id="edit-css-class-group" style="display:none;">
+                <label for="edit-css-class">Ожидаемый CSS класс:</label>
+                <input type="text" id="edit-css-class">
+            </div>
+
+            <div class="form-group" id="edit-attribute-group" style="display:none;">
+                <label for="edit-attribute-name">Атрибут:</label>
+                <input type="text" id="edit-attribute-name" placeholder="напр. 'href' или 'data-value'">
+                <label for="edit-attribute-value" class="sub-label">Ожидаемое значение атрибута:</label>
+                <input type="text" id="edit-attribute-value">
+            </div>
+
+            <div class="form-group">
+                <div class="label-wrapper">
+                    <label for="edit-locators">Локаторы (один на строку):</label>
+                    <button id="reselect-element-btn" title="Выбрать элемент заново на странице">🎯 Выбрать заново</button>
+                </div>
+                <textarea id="edit-locators"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="edit-variable">Имя переменной (для DDT):</label>
+                <input type="text" id="edit-variable">
+            </div>
+
+            <div class="form-group modal-actions">
+                <button id="cancel-edit-btn">Отмена</button>
+                <button id="save-edit-btn">Сохранить</button>
+            </div>
+        </div>
+    </div>
+    <div id="toast-notification" class="toast"></div>
+    <script src="popup.js"></script>
+</body>
+</html>
